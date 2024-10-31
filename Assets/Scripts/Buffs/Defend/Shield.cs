@@ -13,7 +13,7 @@ public class Shield : Buff
     private void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
-        SpawnShield(BuffManager.buffManager.ReturnShieldNumber());
+        SpawnShield();
     }
 
     private void Update()
@@ -22,7 +22,7 @@ public class Shield : Buff
         RotateShield();
     }
 
-    public void SpawnShield(int nunberofShield)
+    public void SpawnShield()
     {
         int numberofShield = BuffManager.buffManager.ReturnShieldNumber();
         for (int i = 0; i < numberofShield; i++)

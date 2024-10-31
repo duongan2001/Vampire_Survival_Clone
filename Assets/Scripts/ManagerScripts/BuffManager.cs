@@ -27,7 +27,7 @@ public class BuffManager : MonoBehaviour
     public static int axeLevel;
     public static int arrowLevel;
     public static int swordLevel;
-    public static int boomerangLevel;
+    public static int iceLevel;
     public static int potionLevel;
     public static int shurikenLevel;
 
@@ -55,9 +55,17 @@ public class BuffManager : MonoBehaviour
     [SerializeField] GameObject swordEnemyDetectGameObject;
     public static int numberofSword;
     public int currentSwordNumber;
+    [Space(10)]
+
+    [Header("Ice variable")]
+    [SerializeField] GameObject icePref;
+    [SerializeField] float iceCD;
+    float iceCD_ing;
+    int numberOfIce;
+    [Range(0, 1f)]
+    [SerializeField] float radius;
 
     /*
-    [Header("Boomerang variable")]
     [Header("Potion variable")]
     [Header("Shuriken variable")]
     */
@@ -79,7 +87,6 @@ public class BuffManager : MonoBehaviour
     private void Start()
     {
         ReturnArrowDmg();
-
     }
 
     private void Update()
@@ -102,15 +109,19 @@ public class BuffManager : MonoBehaviour
 
         if (swordLevel >= 1)
         {
-            //SpawnSwords();
+            SpawnSwords();
         }
 
+        if (iceLevel >= 1)
+        {
+            SpawnIces();
+        }
     }
 
     public void SetDefendStartStat()
     {
-        shieldLevel = 4;
-        armorLevel = 1;
+        shieldLevel = 0;
+        armorLevel = 0;
         bloodStealLevel = 0;
         hpDropLevel = 0;
         speedupLevel = 0;
@@ -119,21 +130,23 @@ public class BuffManager : MonoBehaviour
 
     public void SetAttackStartStat()
     {
-        axeLevel = 3;
+        axeLevel = 0;
         axeCD_ing = 0;
         numberofAxe = 0;
 
-        arrowLevel = 5;
+        arrowLevel = 0;
         arrowCD_ing = 0;
         currentArrowNumber = 0;
         ReturnArrowDmg();
 
-        swordLevel = 3;
+        swordLevel = 0;
         swordCD_ing = 2;
         currentSwordNumber = 0;
         ReturnSwordDmg();
 
-        boomerangLevel = 0;
+        iceLevel = 1;
+        iceCD_ing = 2;
+
         potionLevel = 0;
         shurikenLevel = 0;
     }
@@ -634,8 +647,106 @@ public class BuffManager : MonoBehaviour
             }
             else
             {
-                swordCD_ing = 0.5f;
+                swordCD_ing = 0.2f;
             }
+        }
+    }
+
+    public int ReturnIceNumber()
+    {
+        switch (iceLevel)
+        {
+            case 0:
+                numberOfIce = 0;
+                break;
+
+            case 1:
+                numberOfIce = 4;
+                break;
+
+            case 2:
+                numberOfIce = 4;
+                break;
+
+            case 3:
+                numberOfIce = 6;
+                break;
+
+            case 4:
+                numberOfIce = 6;
+                break;
+
+            case 5:
+                numberOfIce = 8;
+                break;
+
+            case 6:
+                numberOfIce = 8;
+                break;
+        }
+        return numberOfIce;
+    }
+
+    public float ReturnIceDmg()
+    {
+        if (iceLevel == 0)
+        {
+            return 0;
+        }
+
+        float iceDmg = 0;
+        switch (iceLevel)
+        {
+            case 0:
+                iceDmg = 0;
+                break;
+
+            case 1:
+                iceDmg = 30;
+                break;
+
+            case 2:
+                iceDmg = 30;
+                break;
+
+            case 3:
+                iceDmg = 45;
+                break;
+
+            case 4:
+                iceDmg = 45;
+                break;
+
+            case 5:
+                iceDmg = 60;
+                break;
+
+            case 6:
+                iceDmg = 60;
+                break;
+        }
+        return iceDmg;
+    }
+
+    public void SpawnIces()
+    {
+        if (iceCD_ing > 0)
+        {
+            iceCD_ing -= Time.deltaTime;
+            return;
+        }
+        else
+        {
+            for (int i = 0; i < ReturnIceNumber(); i++)
+            {
+                float segment = 2 * Mathf.PI * i / ReturnIceNumber();
+                float horizontalValue = Mathf.Cos(segment);
+                float verticalValue = Mathf.Sin(segment);
+                Vector2 dirValue = new Vector2(horizontalValue, verticalValue);
+                Vector2 worldPos = (Vector2)player.transform.position + dirValue * radius;
+                GameObject shield = Instantiate(icePref, worldPos, Quaternion.identity);
+            }
+            iceCD_ing = iceCD;
         }
     }
 }

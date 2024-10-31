@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour
         SetEXPBarValue();
 
         //Check armor bar
-        SetArmorBarValue();
+        //SetArmorBarValue();
 
     }
 
